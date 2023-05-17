@@ -21,14 +21,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
 
+    @IBAction func editar(_ sender: Any) {
+        tableView.isEditing = false
+    }
     @IBOutlet weak var tableView: UITableView!
     var juegos:[Juego] = []
+    var categorias:[Categoria] = []
     
+    @IBAction func eliminar(_ sender: Any) {
+        tableView.isEditing = true
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.isEditing = true
         // Do any additional setup after loading the view.
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -61,10 +67,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         performSegue(withIdentifier: "juegoSegue", sender: juego)
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let siguienteVC = segue.destination as! JuegosViewController
-        siguienteVC.juego = sender as? Juego
+        if segue.identifier == "juegoSegue" {
+            if let siguienteVC = segue.destination as? JuegosViewController {
+                if let juego = sender as? Juego {
+                    siguienteVC.juego = juego
+                } else {
+                    // Manejar el caso en el que el sender no sea del tipo esperado
+                }
+            }
+        }
     }
-    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let juego = juegos[indexPath.row]
@@ -86,6 +98,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
-
+    
+    
+    
 }
 
